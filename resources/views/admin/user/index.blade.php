@@ -4,46 +4,45 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Usuários</li>
-                    </ol>
-                </nav>
+                @breadcrumb_component(['page' => $page, 'items' => $breadcrumb ?? []])
+                @endbreadcrumb_component
                 <div class="card">
                     <div class="card-header">Dashboard</div>
                     <div class="card-body">
-                        @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
-                            </div>
-                        @endif
+                        @alert_component(['msg' => session('msg'), 'status' => session('status')])
+                        @endalert_component
 
-                            <form class="form-inline" method="GET" action="{{ route('users.index') }}">
-                                <div class="form-group mb-2">
-                                    <a class="btn btn-info" href="#">Add</a>
-                                </div>
-                                <div class="form-group mx-sm-3 mb-2">
-                                    <input type="search" class="form-control" name="search" placeholder="Buscar" value="{{ $search }}">
-                                </div>
-                                <button type="submit" class="btn btn-primary mb-2">Buscar</button>
-                                <a class="btn btn-warning mb-2" href="{{ route('users.index') }}">Limpar</a>
-                            </form>
+                        <form class="form-inline" method="GET" action="{{ route($routeName.'.index') }}">
+                            <div class="form-group mb-2">
+                                <a class="btn btn-info" href="#">Add</a>
+                            </div>
+                            <div class="form-group mx-sm-3 mb-2">
+                                <input type="search" class="form-control" name="search" placeholder="Buscar" value="{{ $search }}">
+                            </div>
+                            <button type="submit" class="btn btn-primary mb-2">Buscar</button>
+                            <a class="btn btn-warning mb-2" href="{{ route($routeName.'.index') }}">Limpar</a>
+                        </form>
 
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Nome</th>
-                                    <th scope="col">E-mail</th>
+                                    @foreach($columnList as $value)
+                                        <th scope="col">{{ $value }}</th>
+                                    @endforeach
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($users as $user)
+                                @foreach($users as $chave => $user)
                                     <tr>
-                                        <th scope="row">{{ $user->id }}</th>
-                                        <td>{{ $user->name }}</td>
-                                        <td>{{ $user->email }}</td>
+                                        <!-- Deixando a tabela mais dinamica onde a variavel columnList
+                                        recebe um array na classe de usuario controller definindo as colunas -->
+                                        @foreach($columnList as $key => $value)
+                                            @if( $key == 'id')
+                                                <th scope="row">@php echo $user->{$key} @endphp</th>
+                                            @else
+                                                <td>@php echo $user->{$key} @endphp</td>
+                                            @endif
+                                        @endforeach
                                     </tr>
                                 @endforeach
                             </tbody>

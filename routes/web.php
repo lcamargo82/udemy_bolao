@@ -11,6 +11,7 @@
 |
 */
 
+//Criado uma middleware, registrado no app/http/kernel.php no array web para atribuicao em no sistema
 Route::get('lang', function () {
     $lang = session('lang', 'pt-BR');
     if($lang == 'pt-BR') {
@@ -23,8 +24,6 @@ Route::get('lang', function () {
 })->name('lang');
 
 Route::get('/', function () {
-    $lang = session('lang', 'pt-BR');
-    App::setLocale($lang);
     return view('welcome');
 });
 
