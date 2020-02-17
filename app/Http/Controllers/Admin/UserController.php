@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Contracts\UserRepositoryInterface;
-use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -14,19 +13,16 @@ class UserController extends Controller
 
     //Deixando a view de listagem de usuarios mais dinamica, substituindo onde for usuario por routeName
     private $route = 'users';
-    /*primeira opcao para deixar o metodo de traducao dinamico,
-    mas pode ocorrer do helper trans() ser alterado, sendo a
-    outra opcao, o metodo construtor*/
-    // primeira opcao -> private $page = 'tradutor.user_list';
-    private $page;
-    private $paginate = 2;
+    private $paginate = 3;
     private $search = ['name', 'email'];
     private $model;
 
     public function __construct(UserRepositoryInterface $model)
     {
-        $this->page = trans('tradutor.user_list');
         $this->model = $model;
+        /*metodo para impedir o acesso deste controller sem estar logado no sistema
+        melhor metodo para isso e levar este sistema, abaixo, para as rotas*/
+        //$this->middleware('auth');
     }
     /**
      * Display a listing of the resource.
@@ -51,7 +47,7 @@ class UserController extends Controller
         }
 
         //helper de traducao para controllers...
-        $page = $this->page;
+        $page = trans('tradutor.user_list');
 
         //Deixando a view de listagem de usuarios mais dinamica, substituindo onde for usuario por routeName
         $routeName = $this->route;
@@ -61,8 +57,8 @@ class UserController extends Controller
             (object)['url' => '' , 'title' => trans('tradutor.list', ['page' => $page])],
         ];
 
-        $request->session()->flash('msg', 'Olá');
-        $request->session()->flash('status', 'error');
+        //session()->flash('msg', 'Olá');
+        //session()->flash('status', 'error');
 
         return view('admin.user.index', compact('users', 'search', 'page', 'routeName', 'columnList', 'breadcrumb'));
     }
@@ -74,7 +70,16 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $routeName = $this->route;
+        $page = trans('tradutor.user_list');
+
+        $breadcrumb = [
+            (object)['url' => route('home') , 'title' => 'Home'],
+            (object)['url' => route($routeName.'.index') , 'title' => trans('tradutor.list', ['page' => $page])],
+            (object)['url' => '' , 'title' => 'Adicionar Usuário'],
+        ];
+
+        return view('admin.user.create', compact( 'page', 'routeName', 'breadcrumb'));
     }
 
     /**
@@ -85,7 +90,23 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ])->validate();
+
+        if ($this->model->create($data)) {
+            session()->flash('msg', 'Usuário adicionado com sucesso');
+            session()->flash('status', 'success');
+            return redirect()->back();
+        } else {
+            session()->flash('msg', 'Não foi possível adicionar');
+            session()->flash('status', 'error');
+            return redirect()->back();
+        }
     }
 
     /**

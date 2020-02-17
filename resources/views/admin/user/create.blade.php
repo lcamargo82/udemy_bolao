@@ -9,14 +9,11 @@
         @alert_component(['msg' => session('msg'), 'status' => session('status')])
         @endalert_component
 
-        @search_component(['routeName' => $routeName, 'search' => $search])
-        @endsearch_component
+        @form_component(['action' => route($routeName.'.store'), 'method' => 'POST'])
+            @include('admin.user.form')
 
-        @table_component(['columnList' => $columnList, 'users' => $users])
-        @endtable_component
-
-        @paginate_component(['search' => $search, 'users' => $users])
-        @endpaginate_component
+            <button class="btn btn-primary btn-lg float-right">Adicionar</button>
+        @endform_component
 
     @endpage_component
 @endsection

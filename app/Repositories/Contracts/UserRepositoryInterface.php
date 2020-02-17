@@ -13,4 +13,5 @@ interface UserRepositoryInterface
     //o retorno, :LengthAwarePaginator, e para orientacao e manutencao
     public function paginate(int $paginate = 10, string $column = 'id', string $order = 'ASC'):LengthAwarePaginator;
     public function findWhereLike(array $columns, string $search, string $column = 'id', string $order = 'ASC'):Collection;
+    public function create(array $data):Bool;
 }
