@@ -1,7 +1,7 @@
 <div class="row">
     <div class="form-group col-6">
         <label for="name">Nome</label>
-        <input class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" type="text" name="name" placeholder="Nome" value="{{ old('name') }}">
+        <input class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" type="text" name="name" placeholder="Nome" value="{{ old('name') ?? ($register->name ?? '') }}">
         @error('name')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -11,7 +11,7 @@
 
     <div class="form-group col-6">
         <label for="email">E-mail</label>
-        <input class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" type="email" name="email" placeholder="E-mail" value="{{ old('email') }}">
+        <input class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" type="email" name="email" placeholder="E-mail" value="{{ old('email') ?? ($register->email ?? '')}}">
         @error('email')
         <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>

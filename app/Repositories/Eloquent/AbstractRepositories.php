@@ -46,4 +46,29 @@ abstract class AbstractRepositories
     {
         return (bool) $this->model->create($data);
     }
+
+    public function find(int $id)
+    {
+       return $this->model->find($id);
+    }
+
+    public function update(array $data, int $id):Bool
+    {
+        $register = $this->find($id);
+        if($register) {
+            return (bool) $register->update($data);
+        } else {
+            return false;
+        }
+    }
+
+    public function delete(int $id):Bool
+    {
+        $register = $this->find($id);
+        if($register) {
+            return (bool) $register->delete();
+        } else {
+            return false;
+        }
+    }
 }

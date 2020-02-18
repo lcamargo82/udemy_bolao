@@ -4,6 +4,7 @@
         @foreach($columnList as $value)
             <th scope="col">{{ $value }}</th>
         @endforeach
+        <th scope="col">Ação</th>
     </tr>
     </thead>
     <tbody>
@@ -18,6 +19,23 @@
                     <td>@php echo $user->{$key} @endphp</td>
                 @endif
             @endforeach
+            <td>
+                <a href="{{ route($routeName.'.show', $user->id) }}">
+                    <i style="color: black" class="material-icons">
+                        pageview
+                    </i>
+                </a>
+                <a href="{{ route($routeName.'.edit', $user->id) }}">
+                    <i style="color: orange" class="material-icons">
+                        create
+                    </i>
+                </a>
+                <a href="{{ route($routeName.'.show', [$user->id, 'delete=1']) }}">
+                    <i style="color: red" class="material-icons">
+                        delete
+                    </i>
+                </a>
+            </td>
         </tr>
     @endforeach
     </tbody>

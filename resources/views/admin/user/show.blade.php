@@ -9,14 +9,14 @@
         @alert_component(['msg' => session('msg'), 'status' => session('status')])
         @endalert_component
 
-        @search_component(['routeName' => $routeName, 'search' => $search])
-        @endsearch_component
+        <p>Nome: {{ $register->name }}</p>
+        <p>E-mail: {{ $register->email }}</p>
 
-        @table_component(['columnList' => $columnList, 'users' => $users, 'routeName' => $routeName])
-        @endtable_component
-
-        @paginate_component(['search' => $search, 'users' => $users])
-        @endpaginate_component
+        @if($delete)
+            @form_component(['action' => route($routeName.'.destroy', $register->id), 'method' => 'DELETE'])
+                <button class="btn btn-danger btn-lg">Deletar</button>
+            @endform_component
+        @endif
 
     @endpage_component
 @endsection
